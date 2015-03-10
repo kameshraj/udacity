@@ -1,2 +1,3 @@
 # udacity-full-stack-web-developer
-Udacity projects for Full Stack Web Developer
+Python files to generate **Fresh Tomatoes** web site for udacity's Full Stack Web Developer nano Degree course
+
