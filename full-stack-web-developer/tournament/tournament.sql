@@ -9,7 +9,7 @@
 -- Connect to some default database to delete the database
 \c tournament
 DROP TABLE Players;
-DROP TABLE matches;
+DROP TABLE Matches;
 
 \c vagrant
 DROP DATABASE tournament;
@@ -18,4 +18,4 @@ CREATE DATABASE tournament;
 \c tournament
 
 CREATE TABLE Players (Id SERIAL PRIMARY KEY, Name VARCHAR(250) not NULL , Wins INTEGER DEFAULT 0, Matches INTEGER DEFAULT 0);
-CREATE TABLE Matches (Id1 INTEGER not NULL, Id2 INTEGER);
+CREATE TABLE Matches (Player1 INTEGER not NULL REFERENCES Players(Id), Player2 INTEGER REFERENCES Players(Id));

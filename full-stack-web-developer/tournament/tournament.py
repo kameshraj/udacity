@@ -7,14 +7,14 @@ import psycopg2
 
 def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    return psycopg2.connect('dbname=tournament')
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
     db = connect()
     cur = db.cursor()
-    cur.execute("DELETE FROM Matches")
+    cur.execute('DELETE FROM Matches')
     db.commit()
     db.close()
 
@@ -23,7 +23,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     db = connect()
     cur = db.cursor()
-    cur.execute("DELETE FROM Players")
+    cur.execute('DELETE FROM Players')
     db.commit()
     db.close()
 
@@ -32,7 +32,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     db = connect()
     cur = db.cursor()
-    cur.execute("SELECT count(*) FROM Players")
+    cur.execute('SELECT count(*) FROM Players')
     cnt = cur.fetchall()[0][0]
     db.close()
     return cnt
@@ -48,7 +48,7 @@ def registerPlayer(name):
     """
     db = connect()
     cur = db.cursor()
-    cur.execute("INSERT INTO Players (Name) VALUES (%s)", (name,))
+    cur.execute("INSERT INTO Players (Name) VALUES (%s)", (name, ))
     db.commit()
     db.close()
 
@@ -85,10 +85,10 @@ def reportMatch(winner, loser):
     cur = db.cursor()
 
     # update wins for player
-    cur.execute("UPDATE Players SET Wins = Wins + 1 WHERE id = %s", (winner,))
+    cur.execute("UPDATE Players SET Wins = Wins + 1 WHERE id = %s", (winner, ))
 
     # update match played for players
-    cur.execute("UPDATE Players SET matches = matches + 1 WHERE id in (%s, %s)", (winner,loser))
+    cur.execute("UPDATE Players SET matches = matches + 1 WHERE id in (%s, %s)", (winner, loser))
 
     # Insert the players into table
     cur.execute("INSERT INTO Matches VALUES (%s, %s)", (winner, loser))
@@ -112,10 +112,10 @@ def swissPairings():
     """
     db = connect()
     cur = db.cursor()
-    cur.execute("""SELECT t.id1, t.name1, t.id2, t.name2 FROM (
-                      SELECT id as id1, name as name1,
-                      LEAD(id) OVER (ORDER BY wins DESC) as id2,
-                      LEAD(name) OVER (ORDER BY wins DESC) as name2,
+    cur.execute("""SELECT t.pid1, t.pname1, t.pid2, t.pname2 FROM (
+                      SELECT id as pid1, name as pname1,
+                      LEAD(id) OVER (ORDER BY wins DESC) as pid2,
+                      LEAD(name) OVER (ORDER BY wins DESC) as pname2,
                       row_number() OVER (ORDER BY wins DESC) as row
                       FROM players
                   ) t WHERE t.row % 2 = 1""")
