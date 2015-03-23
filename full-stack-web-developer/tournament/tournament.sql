@@ -6,16 +6,11 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
--- Connect to some default database to delete the database
-\c tournament
-DROP TABLE Players;
-DROP TABLE Matches;
-
-\c vagrant
-DROP DATABASE tournament;
+-- Lets start fresh, drop the datbase if it exists
+DROP DATABASE IF EXISTS tournament;
 
 CREATE DATABASE tournament;
 \c tournament
 
-CREATE TABLE Players (Id SERIAL PRIMARY KEY, Name VARCHAR(250) not NULL , Wins INTEGER DEFAULT 0, Matches INTEGER DEFAULT 0);
-CREATE TABLE Matches (Player1 INTEGER not NULL REFERENCES Players(Id), Player2 INTEGER REFERENCES Players(Id));
+CREATE TABLE players (id SERIAL PRIMARY KEY, name VARCHAR(250) not NULL , wins INTEGER DEFAULT 0, matches INTEGER DEFAULT 0);
+CREATE TABLE matches (player1 INTEGER not NULL REFERENCES players(id), player2 INTEGER REFERENCES players(id));
