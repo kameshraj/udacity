@@ -1,0 +1,11 @@
+
+SQLAlchemy
+SQLAlchemy-Migrate
+WTForm
+Flask
+Flask-Login
+Flask-OpenId
+Flask-WTF
+Flask-SQLAlchemy
+Flask-Bootstrap
+Marshmallow

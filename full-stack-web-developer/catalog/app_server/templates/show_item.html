@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {{ form.hidden_tag() }}
+    <p>
+        <h3>{{ item.name }}</h3>
+        <p>
+           Description: {{ item.description }}
+        </p>
+        <p>
+            {% if g.user.is_authenticated() %}
+            <a href="/item/{{ item.id }}/edit">Edit</a> |
+            <a href="/item/{{ item.id }}/delete">Delete</a>
+            {% endif %}
+        </p>
+    <p>
+{% endblock %}

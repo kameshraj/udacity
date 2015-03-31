@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set active_page = 'index' %}
+{% block content %}
+    <div class="col-md-3" style="border-right: 1px dashed #333;">
+        {% if g.user.is_authenticated() %}<a href="/add-category">Add category</a>{% endif %}
+        <h4>categories</h4>
+        {% for category in categories %}
+        <a href="/category/{{ category.id }}">{{ category.name }}</a><br />
+        {% endfor %}
+    </div>
+    <div class="col-md-9">
+        {% if g.user.is_authenticated() %}<a href="/add-item">Add an Item</a>{% endif %}
+        <h4>Latest Items</h4>
+        {% for item in items %}
+        <a href="/item/{{ item.id }}">{{ item.name }}</a> <span style="color:slategray"><i>({{ item.category.name }})</i></span><br />
+        {% endfor %}
+    </div>
+{% endblock %}

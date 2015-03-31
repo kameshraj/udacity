@@ -1,0 +1,48 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Welcome to catalog directory</title>
+    {% endif %}
+</head>
+<body>
+{% set nav_bar = [('/', 'index', 'Home')] %}
+{% set active_page = active_page | default('index') %}
+<div class="container-fluid">
+    <nav class="navbar navbar-inverse">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Catalog App</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+            {% for href, id, caption in nav_bar %}
+                <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+            {% endfor %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li{% if active_page == 'login' %}class="active"{% endif %}><a href={% if g.user.is_authenticated() %} "/logout">Logout{% else %} "/login">Login{% endif %}</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <table class="table">
+                {% for message in messages %}
+                <tr class="danger"><td>{{ message }}</td></tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        {% endwith %}
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</body>
+</html>

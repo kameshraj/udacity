@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <form class="form-vertical" role="form"  method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            Title <br />
+            {{ form.name(size=30, placeholder="New Item") }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            Description <br />
+            {{ form.description(size=80, placeholder="Description") }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            Category <br />
+            <select name="category">
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+            </select>
+        </p>
+        <p>
+            <input type="submit" value="create" />
+        </p>
+    </form>
+{% endblock %}

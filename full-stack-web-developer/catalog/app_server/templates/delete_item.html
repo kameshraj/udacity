@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <form class="form-horizontal" role="form" method="post">
+        {{ form.hidden_tag() }}
+        Are you sure you want to delete item: <b>{{ item.name }}</b>?<br />
+        <input type="submit" value="Delete" />
+    </form>
+{% endblock %}

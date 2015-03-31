@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <form class="form-horizontal" role="form" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            category to add: {{ form.name(size=30, placeholder="New category") }}<br />
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <input type="submit" value="create" />
+        </p>
+    </form>
+{% endblock %}
