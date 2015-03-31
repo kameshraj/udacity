@@ -1,15 +1,3 @@
-
-sudo pip install virtualenv
-
-virtualenv flask
-will create a folder flask
-source flask/bin/activate
-
-pip install -r requirements.txt
-
-
-./db_create.py
-
 Udacity Fullstack Web Developer
 ===============================
 
