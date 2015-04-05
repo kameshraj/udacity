@@ -5,6 +5,7 @@ WTForm
 Flask
 Flask-Login
 Flask-OpenId
+GitHub-Flask
 Flask-WTF
 Flask-SQLAlchemy
 Flask-Bootstrap

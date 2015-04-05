@@ -2,8 +2,18 @@ from app_server import db
 from sqlalchemy import UniqueConstraint
 
 #### Models ####
-""" User table """
+
 class User(db.Model):
+    """
+    Table to hold all user information
+
+    Fields:
+        id:         System ID (auto generated)
+        nickname:   Nickname returned by OpenID. If none set script will use email
+                    ID (with out domain)
+        email:      Email address of the user
+        created_on: UTC time when users was 1st added to our system
+    """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(64), index=True)
@@ -11,19 +21,28 @@ class User(db.Model):
     created_on = db.Column(db.DateTime, default=db.func.now())
     last_seen = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
-    # if this instance is defined user be authenticated
     def is_authenticated(self):
+        """
+        True if user is authenticated. Which is always true if this instance exists
+        """
         return True
 
-    # if this instance is alive user should be active
     def is_active(self):
+        """
+        True if user is active. Which is always true if this instance exists
+        """
         return True
 
-    # if this instance is alive, user is not anonymous
     def is_anonymous(self):
+        """
+        False if user is not anonymous. If this instance is alive user is not anonymous
+        """
         return False
 
     def get_id(self):
+        """
+        Return user ID of this user
+        """
         try:
             return unicode(self.id)  # python 2
         except NameError:
@@ -32,8 +51,18 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
-""" Categories table """
+
 class Categories(db.Model):
+    """
+    Table to hold all Category in our catalog
+
+    Fields:
+        id:         System ID (auto generated)
+        name:       Name of the category
+        created_by: User ID of user who created this item
+        created_on: UTC time when this category was created
+        updated_on: UTC time when this category was last updated
+    """
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True, index=True)
@@ -47,8 +76,18 @@ class Categories(db.Model):
     def __repr__(self):
         return '<Category %r>' % self.name
 
-""" items under each category """
 class Items(db.Model):
+    """
+    Table to hold all Item in our catalog
+
+    Fields:
+        id:          System ID (auto generated)
+        name:        Name of the Item
+        category_id: Category ID for this item
+        created_by:  User ID of user who created this item
+        created_on:  UTC time when this category was created
+        updated_on:  UTC time when this category was last updated
+    """
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, index=True)

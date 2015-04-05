@@ -1,5 +1,6 @@
-Udacity Fullstack Web Developer
-===============================
+
+Udacity Full stack Web Developer
+================================
 
 Catalog Directory Project
 -------------------------
@@ -34,25 +35,27 @@ structure in models.py. You would use this if you are developing this project an
 		- **add_item** - template to add a new item
 		- **edit_item** - template to edit existing item
 		- **delete_item** - template delete existing item
-		
+
 	- **views.py** - All URL routing and CURD operations are handled in this file
-	- ** myforms.py** - Defines forms that will be used by views.py for CURD operation
+	- **myforms.py** - Defines forms that will be used by views.py for CURD operation
 	- **models.py** - This file defines the tables needed for this project. 
 	- **schemas.py** - This file defines schemas to generate JSON data for the tables
 
 -----
 
-Creating a virtual environment
-------------------------------
-It is recommened to create a virtual environment for this project. This will enable us to install needed python modules without impacting the system.
+Creating a virtual environment (Optional)
+-----------------------------------------
+It is recommended you keep dev and production environment separate to control module versions. These can 
+be done using a virtual environment or a separate virtual system up like Vagrant or Docker.
 
-Install virtualenv using the below command
+An example is given to create a virtual environment for this project. Install virtualenv using the below command
 
 ```
 sudo pip install virtualenv
 ```
 
-You can create a virtual environment for the project now. Go to the root folder of this project and execute this command to create a virtual environment called flask
+You can create a virtual environment for the project now.
+Go to the root folder of this project and execute this command to create a virtual environment called flask
  
 ```
 virtualenv flask
@@ -66,8 +69,8 @@ To activate this virtual environment run this command.
 source flask/bin/activate
 ```
 
-To install all the needed python modules for this project run this 
-command
+To install all the needed python modules for this project run this command. 
+If not running in virtualenv use sudo to run this command
 
 ```
 pip install -r requirements.txt
@@ -81,16 +84,19 @@ python db_create.py
 Now you should have all the needed tables in the database for your project
 
 ----------
-
-Project file break down
+Starting the App Server
 -----------------------
-**tournament_test.py**: unit test case for the project
-- **testDeleteMatches()**: Check if we can delete all matches record from the db
-- **testDelete()**: Check if we can delete all matches & players record from the db
-- **testCount()**: Check to see players count is 0 after deleting all matches & players
-- **testRegister()**: Registers a players and checks countPlayers returns 1
-- **testRegisterCountDelete()**: Registers 4 players and checks the countPlayers to match 4. Deletes all players and checks countPlayers to match 0
-- **testStandingsBeforeMatches()**: Test players standing result. Will add 2 players and check playerStanding return 2. Checks wins and matches are 0 (before a tournament is started). Also checks if the name appears in order of insert
-- **testReportMatches()**: Test match result and verifies winner has matches played and wins updated
-- **testPairings()**: Test after 1 match players with 1 win will be paired
+After you have installed the needed modules, created the Database & Tables for the project. You can start 
+the App Server by running
+ 
+```
+./run.py
+```
 
+from the root folder. This is launch the App server listening on port 8000 (defined in the file)
+
+-------
+JSON Data
+---------
+This project can also return JSON data with all Categories and its Items. This can be accessed at
+http://localhost:8000/catalog.json (You may have to change localhost to your server's IP address)

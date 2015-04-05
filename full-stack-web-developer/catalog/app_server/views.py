@@ -2,32 +2,58 @@
 from flask import flash, render_template, redirect, jsonify, url_for, session, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from datetime import datetime
+import sys
 
-
-# import our app
+# import our app and needed things from it
 from app_server import app, db, lm, oid, models, schemas, my_forms
 
-# register user_loader to flask-login
 @lm.user_loader
 def load_user(id):
+    """
+    Register our user to flask-login module's user_loader
+
+    Arguments:
+        id: User ID
+    """
     return models.User.query.get(int(id))
 
 # helper methods
 def time_now():
-    datetime.utcnow()
+    """
+    Will return current UTC timestamp
+
+    Arguments:
+        None
+
+    return:
+        Current timestamp in UTC
+    """
+    return datetime.utcnow()
+
 
 # All the routes are defined here
 
-# Show Catalog home
 @app.route('/')
 @app.route('/index/')
 def showcategories():
+    """
+    Renders Categories form which is also the home page for this app.
+
+    Arguments:
+        None
+    """
     return render_template('categories.html', title='Catalog Directory', categories=models.Categories.query.all(),
                            items=models.Items.query.order_by(models.Items.updated_on.desc()).limit(10).all())
 
-# Show a category
+
 @app.route('/category/<int:c_id>/')
 def showCategory(c_id):
+    """
+    Show a given category
+
+    Arguments:
+        c_id: Category ID to be displayed
+    """
     category = models.Categories.query.get(c_id)
     if not category:
         flash('category id %s not found.' % c_id)
@@ -40,10 +66,16 @@ def showCategory(c_id):
     return render_template('show_category.html', title=title, form=form, category=category, items=items)
 
 
-# user should be logged in to add
 @app.route('/add-category', methods=['GET', 'POST'])
 @login_required
 def addCategory():
+    """
+    Renders form to add a Category. Only logged in users can access this page.
+    Unauthorized user will be redirected to Login page
+
+    Arguments:
+        None
+    """
     form = my_forms.CategoryForm()
     if form.validate_on_submit():
         name = form.name.data
@@ -71,6 +103,14 @@ def addCategory():
 @app.route('/category/<int:c_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editCategory(c_id):
+    """
+    Renders form to edit a category. Only logged in users can access this page,
+    Unauthorized user will be redirected to Login page. Also makes sure only user
+    who added this Category can only edit it.
+
+    Arguments:
+        c_id: Category ID to edit
+    """
     category = models.Categories.query.get(c_id)
     if not category:
         flash('category id %s not found.' %c_id)
@@ -95,10 +135,17 @@ def editCategory(c_id):
     return render_template('edit_category.html', title=title, form=form, category=category)
 
 
-# Delete category
 @app.route('/category/<int:c_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deletecategory(c_id):
+    """
+    Renders form to delete a category. Only logged in users can access this page,
+    Unauthorized user will be redirected to Login page. Also makes sure only user
+    who added this Category can only delete it.
+
+    Arguments:
+       c_id: Category ID to edit
+    """
     category = models.Categories.query.get(c_id)
     if not category:
         flash('category id %s not found.' % c_id)
@@ -127,6 +174,12 @@ def deletecategory(c_id):
 # Show an item
 @app.route('/item/<int:i_id>/')
 def showItem(i_id):
+    """
+    Show a given Item
+
+    Arguments:
+        i_id: Item ID to be displayed
+    """
     item = models.Items.query.get(i_id)
     if not item:
         flash('Item %s is not found' %i_id)
@@ -138,10 +191,16 @@ def showItem(i_id):
     return render_template('show_item.html', title=title, form=form, item=item)
 
 
-# user should be logged in to add
 @app.route('/add-item', methods=['GET', 'POST'])
 @login_required
 def addItem():
+    """
+    Renders form to add an Item. Only logged in users can access this page.
+    Unauthorized user will be redirected to Login page
+
+    Arguments:
+        None
+    """
     form = my_forms.ItemForm()
     if form.validate_on_submit():
         name = form.name.data
@@ -168,10 +227,17 @@ def addItem():
     return render_template('add_item.html', title='Add an Item', form=form, categories=models.Categories.query.all())
 
 
-# Edit Item
 @app.route('/item/<int:i_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editItem(i_id):
+    """
+    Renders form to edit an Item. Only logged in users can access this page,
+    Unauthorized user will be redirected to Login page. Also makes sure only user
+    who added this Item can only edit it.
+
+    Arguments:
+        i_id: Item ID to edit
+    """
     item = models.Items.query.get(i_id)
     if not item:
         flash('Item id %s not found.' %i_id)
@@ -201,10 +267,17 @@ def editItem(i_id):
     return render_template('edit_item.html', title=title, form=form, item=item, categories=categories)
 
 
-# Delete Item
 @app.route('/item/<int:i_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteItem(i_id):
+    """
+    Renders form to delete an Item. Only logged in users can access this page,
+    Unauthorized user will be redirected to Login page. Also makes sure only user
+    who added this Category can only delete it.
+
+    Arguments:
+       i_id: Item ID to edit
+    """
     item = models.Items.query.get(i_id)
     if not item:
         flash('Item id %s not found.' %i_id)
@@ -228,19 +301,38 @@ def deleteItem(i_id):
 # All JSON stuff here
 @app.route('/catalog.json')
 def catalogJson():
+    """
+    Returns a JSON list of all Categories and Items in each of them
+    """
     categories = models.Categories.query.all()
     serializer = schemas.categories_schema
     result = serializer.dump(categories)
     return jsonify({"Categories": result.data})
 
-# All login stuff here
+
+#### All login stuff here ###
 @lm.user_loader
 def load_user(id):
+    """
+    Returns user for given user ID
+
+    Arguments:
+        id: User ID
+
+    return:
+        User
+    """
     return models.User.query.get(int(id))
+
 
 @app.route('/login/', methods=['GET', 'POST'])
 @oid.loginhandler
 def login():
+    """
+    Renders Login form for user to Login using OpenIDs. If session has an user
+    already logged just return to home page
+    """
+    # if logged in already, just return
     if g.user is not None and g.user.is_authenticated():
         return redirect('/')
 
@@ -252,9 +344,12 @@ def login():
     return render_template('login.html', title='Sign In', form=form,
                            providers=app.config['OPENID_PROVIDERS'])
 
-# before we login, associate user to flask-login
+
 @app.before_request
 def before_request():
+    """
+    populates flash user for our session and updates last seen time for this user
+    """
     g.user = current_user
     if g.user.is_authenticated():
         g.user.last_seen = time_now()
@@ -264,19 +359,28 @@ def before_request():
 # after login, add user if new and redirect to page accessed
 @oid.after_login
 def after_login(resp):
+    """
+    Parses the response received from OpenID servers. If this is a new user
+    add them to Users table
+
+    Arguments:
+        resp: Response form OpenID server
+    """
+
+    # If OpenID response didn't have an email ID, force login again
     if resp.email is None or resp.email == "":
         flash('Invalid login. Please try again.')
         return redirect(url_for('login'))
 
+    # if we don't have this user in our database before, add them
     user = models.User.query.filter_by(email=resp.email).first()
-
-    # if we don't have this user before, add it
     if user is None:
         nickname = resp.nickname
         if nickname is None or nickname == "":
             nickname = resp.email.split('@')[0]
-        tnow = time_now()
+
         user = models.User(nickname=nickname, email=resp.email)
+
         try:
             db.session.add(user)
         except:
@@ -297,10 +401,12 @@ def after_login(resp):
 
     login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or '/')
-    #return redirect('/')
 
-# logout user
+
 @app.route('/logout')
 def logout():
+    """
+    Logout User and redirect to home page
+    """
     logout_user()
     return redirect('/')
